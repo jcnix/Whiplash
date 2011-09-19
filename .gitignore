@@ -2,6 +2,7 @@
 *.ap_
 *.dex
 *.class
+*.swp
 bin/
 gen/
 local.properties
