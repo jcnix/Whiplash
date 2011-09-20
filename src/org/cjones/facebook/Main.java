@@ -24,8 +24,6 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Util;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-//import java.io.BufferedOutputStream;
-//import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,10 +51,12 @@ public class Main extends Activity
         SessionStore.restore(fb, this);
         SessionEvents.addAuthListener(new SampleAuthListener());
         SessionEvents.addLogoutListener(new SampleLogoutListener());
+        
         // Use this if we want to let users choose a photo instead
         // of the Profile Picture in the future
         //fb.authorize(this, new String[] {"friends_photos" },
         //        new DialogListener()
+        
         fb.authorize(this, new DialogListener()
         {
             @Override
@@ -93,10 +93,7 @@ public class Main extends Activity
 
     public void sync(View view)
     {
-        if(canWriteSD())
-        {
-            asyncRunner.request("me/friends", new GetFriendsListener());
-        }
+        asyncRunner.request("me/friends", new GetFriendsListener());
     }
 
     public class GetFriendsListener extends BaseRequestListener
@@ -115,19 +112,16 @@ public class Main extends Activity
                     null,
                     People.NAME + " ASC"
                     );
-            Log.w("FacebookSync", "Cursor: " + cursor.getCount());
 
             try
             {
                 JSONObject json = Util.parseJson(response);
                 JSONArray data = json.getJSONArray("data");
-                String names = "";
                 for(int i = 0; i < data.length(); i++)
                 {
                     JSONObject frnd = data.getJSONObject(i);
                     String fname = frnd.getString("name");
                     String id = frnd.getString("id");
-                    names += fname + "\n";
 
                     try
                     {
@@ -135,20 +129,21 @@ public class Main extends Activity
                         URLConnection conn = url.openConnection();
                         BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        //BufferedOutputStream out = new BufferedOutputStream(
-                        //        new FileOutputStream("/mnt/sdcard/fbsync/"+id+".jpg"));
+                        
                         int c;
                         while((c = in.read()) != -1)
                         {
                             out.write(c);
                         }
+                        
                         cursor.moveToFirst();
                         while(cursor.moveToNext())
                         {
                             String cname = cursor.getString(1);
                             if(cname == null)
+                            {
                                 continue;
-                            Log.w("FacebookSync", cname);
+                            }
                             if(cname.equals(fname))
                             {
                                 int cid = cursor.getInt(0);
@@ -162,7 +157,6 @@ public class Main extends Activity
                         Log.w("FacebookSync", ex.getMessage());
                     }
                 }
-                final String fnames = names;
             }
             catch(JSONException ex)
             {
@@ -173,20 +167,6 @@ public class Main extends Activity
                 Log.w("FacebookSync", ex.getMessage());
             }
             cursor.close();
-        }
-    }
-
-    public boolean canWriteSD()
-    {
-        String state = Environment.getExternalStorageState();
-
-        if (Environment.MEDIA_MOUNTED.equals(state))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
