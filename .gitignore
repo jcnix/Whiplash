@@ -6,3 +6,5 @@
 bin/
 gen/
 local.properties
+icon.psd
+release-key.keystore
