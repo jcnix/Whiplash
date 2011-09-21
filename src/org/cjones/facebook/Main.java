@@ -30,6 +30,19 @@ public class Main extends Activity
         setContentView(R.layout.main);
 
         asyncRunner = new AsyncFacebookRunner(fb);
+        final Button sync = (Button) findViewById(R.id.sync_button);
+        mText = (TextView) findViewById(R.id.mText);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        fb.authorizeCallback(requestCode, resultCode, data);
+    }
+
+    public void fb_auth(View view)
+    {
         SessionStore.restore(fb, this);
         SessionEvents.addAuthListener(new SampleAuthListener());
         SessionEvents.addLogoutListener(new SampleLogoutListener());
@@ -61,16 +74,6 @@ public class Main extends Activity
             {
             }
         });
-
-        final Button sync = (Button) findViewById(R.id.sync_button);
-        mText = (TextView) findViewById(R.id.mText);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        fb.authorizeCallback(requestCode, resultCode, data);
     }
 
     public void sync(View view)

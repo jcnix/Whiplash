@@ -5,6 +5,13 @@
     android:layout_height="fill_parent"
     >
     <Button
+        android:id="@+id/connect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to Facebook"
+        android:onClick="fb_auth"
+        />
+    <Button
         android:id="@+id/sync_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

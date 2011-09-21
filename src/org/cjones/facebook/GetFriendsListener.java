@@ -30,6 +30,7 @@ public class GetFriendsListener extends BaseRequestListener
 
     public void onComplete(final String response, final Object state)
     {
+        Log.w("FacebookSync", "START SYNC");
         String[] projection = new String[] {
             People._ID,
                 People.NAME
@@ -45,6 +46,7 @@ public class GetFriendsListener extends BaseRequestListener
 
         try
         {
+            Log.w("FacebookSync", response);
             JSONObject json = Util.parseJson(response);
             JSONArray data = json.getJSONArray("data");
             for(int i = 0; i < data.length(); i++)
@@ -76,6 +78,7 @@ public class GetFriendsListener extends BaseRequestListener
                         }
                         if(cname.equals(fname))
                         {
+                            Log.w("FacebookSync", "Setting: " + fname);
                             int cid = cursor.getInt(0);
                             Uri per = ContentUris.withAppendedId(People.CONTENT_URI, cid);
                             ContactManager.setPhoto(per, out.toByteArray(), activity);
