@@ -22,10 +22,12 @@ import org.json.JSONObject;
 public class GetFriendsListener extends BaseRequestListener
 {
     private Activity activity;
+    private ProgressObservable observable;
 
-    public GetFriendsListener(Activity activity)
+    public GetFriendsListener(Activity activity, ProgressObservable observable)
     {
         this.activity = activity;
+        this.observable = observable;
     }
 
     public void onComplete(final String response, final Object state)
@@ -70,6 +72,8 @@ public class GetFriendsListener extends BaseRequestListener
                         int cid = cursor.getInt(0);
                         Uri per = ContentUris.withAppendedId(People.CONTENT_URI, cid);
                         ContactManager.setPhoto(per, photo, activity);
+                        Friend f = new Friend(fname, photo);
+                        observable.notify(f);
                     }
                 }
             }

@@ -78,7 +78,11 @@ public class Main extends Activity
 
     public void sync(View view)
     {
-        asyncRunner.request("me/friends", new GetFriendsListener(this));
+        ProgressObservable po = ProgressObservable.getInstance();
+        GetFriendsListener gfl = new GetFriendsListener(this, po);
+        asyncRunner.request("me/friends", gfl);
+        Intent showProgress = new Intent(view.getContext(), Progress.class);
+        startActivity(showProgress);
     }
 
 
