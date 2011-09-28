@@ -74,6 +74,7 @@ public class GetFriendsListener extends BaseRequestListener
                         ContactManager.setPhoto(per, photo, activity);
                         Friend f = new Friend(fname, photo);
                         observable.notify(f);
+                        break;
                     }
                 }
             }
