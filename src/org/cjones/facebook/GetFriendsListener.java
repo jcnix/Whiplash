@@ -33,9 +33,10 @@ public class GetFriendsListener extends BaseRequestListener
     public void onComplete(final String response, final Object state)
     {
         Log.w("FacebookSync", "START SYNC");
-        Uri contacts = ContactsContract.Contacts.CONTENT_URI;
+
+        Uri contacts = ContactsContract.Data.CONTENT_URI;
         String[] projection = new String[] {
-            ContactsContract.Contacts._ID,
+            ContactsContract.Data.RAW_CONTACT_ID,
             ContactsContract.Contacts.DISPLAY_NAME
         };
         String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP +
@@ -43,12 +44,12 @@ public class GetFriendsListener extends BaseRequestListener
         String sortOrder = ContactsContract.Contacts.DISPLAY_NAME +
             " COLLATE LOCALIZED ASC";
         Cursor cursor = activity.managedQuery(
-                contacts,
-                projection,
-                selection,
-                null,
-                sortOrder
-                );
+            contacts,
+            projection,
+            selection,
+            null,
+            sortOrder
+            );
 
         try
         {

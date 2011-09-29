@@ -17,8 +17,8 @@ public class ContactManager
         String where = ContactsContract.Data.RAW_CONTACT_ID + " == " + 
             ContentUris.parseId(personUri) + " AND " + Data.MIMETYPE + "=='" + 
             ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'"; 
-            Cursor cursor = context.getContentResolver().query 
-        (ContactsContract.Data.CONTENT_URI, null, where, null, null); 
+        Cursor cursor = context.getContentResolver().query 
+            (ContactsContract.Data.CONTENT_URI, null, where, null, null); 
         int idIdx = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID); 
         if(cursor.moveToFirst())
         { 
