@@ -45,7 +45,7 @@ public class GetFriendsListener extends BaseRequestListener
         Cursor cursor = activity.managedQuery(
                 contacts,
                 projection,
-                null,
+                selection,
                 null,
                 sortOrder
                 );
