@@ -62,7 +62,7 @@ public class GetFriendsListener extends BaseRequestListener
                 String id = frnd.getString("id");
 
                 cursor.moveToFirst();
-                while(cursor.moveToNext())
+                while(!cursor.isAfterLast())
                 {
                     String cname = cursor.getString(1);
                     if(cname == null)
@@ -81,6 +81,7 @@ public class GetFriendsListener extends BaseRequestListener
                         observable.notify(f);
                         break;
                     }
+                    cursor.moveToNext();
                 }
             }
         }
