@@ -5,7 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.Contacts.People;
+import android.provider.ContactsContract;
 import android.util.Log;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
@@ -33,17 +33,21 @@ public class GetFriendsListener extends BaseRequestListener
     public void onComplete(final String response, final Object state)
     {
         Log.w("FacebookSync", "START SYNC");
+        Uri contacts = ContactsContract.Contacts.CONTENT_URI;
         String[] projection = new String[] {
-            People._ID,
-                People.NAME
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.DISPLAY_NAME
         };
-        Uri contacts = People.CONTENT_URI;
+        String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP +
+            " = '1'";
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME +
+            " COLLATE LOCALIZED ASC";
         Cursor cursor = activity.managedQuery(
                 contacts,
                 projection,
                 null,
                 null,
-                People.NAME + " ASC"
+                sortOrder
                 );
 
         try
@@ -70,7 +74,8 @@ public class GetFriendsListener extends BaseRequestListener
                         Log.w("FacebookSync", "Setting: " + fname);
                         byte[] photo = downloadPhoto(id);
                         int cid = cursor.getInt(0);
-                        Uri per = ContentUris.withAppendedId(People.CONTENT_URI, cid);
+                        Uri per = ContentUris.withAppendedId(
+                                ContactsContract.Contacts.CONTENT_URI, cid);
                         ContactManager.setPhoto(per, photo, activity);
                         Friend f = new Friend(fname, photo);
                         observable.notify(f);
