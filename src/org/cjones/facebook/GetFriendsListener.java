@@ -70,7 +70,7 @@ public class GetFriendsListener extends BaseRequestListener
                     {
                         continue;
                     }
-                    if(cname.equals(fname))
+                    if(nameMatch(fname, cname))
                     {
                         Log.w("FacebookSync", "Setting: " + fname);
                         byte[] photo = downloadPhoto(id);
@@ -97,7 +97,7 @@ public class GetFriendsListener extends BaseRequestListener
         cursor.close();
     }
 
-    public byte[] downloadPhoto(String id)
+    private byte[] downloadPhoto(String id)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try
@@ -118,6 +118,26 @@ public class GetFriendsListener extends BaseRequestListener
         }
 
         return out.toByteArray();
+    }
+
+    private boolean nameMatch(String n1, String n2)
+    {
+        //Log.w("FacebookSync", n1 + " " + n2);
+
+        String na1[] = n1.split(" ");
+        String na2[] = n2.split(" ");
+
+        String fname1 = na1[0];
+        String fname2 = na2[0];
+        String lname1 = na1[na1.length - 1];
+        String lname2 = na2[na2.length - 1];
+
+        if(fname1.equals(fname2) && lname1.equals(lname2))
+        {
+            return true;
+        }
+
+        return false;
     }
 }
 
