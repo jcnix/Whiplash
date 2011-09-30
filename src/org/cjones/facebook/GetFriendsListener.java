@@ -33,24 +33,6 @@ public class GetFriendsListener extends BaseRequestListener
     public void onComplete(final String response, final Object state)
     {
         Log.w("FacebookSync", "START SYNC");
-
-        Uri contacts = ContactsContract.Data.CONTENT_URI;
-        String[] projection = new String[] {
-            ContactsContract.Data.RAW_CONTACT_ID,
-            ContactsContract.Contacts.DISPLAY_NAME
-        };
-        String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP +
-            " = '1'";
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME +
-            " COLLATE LOCALIZED ASC";
-        Cursor cursor = activity.managedQuery(
-            contacts,
-            projection,
-            selection,
-            null,
-            sortOrder
-            );
-
         try
         {
             Log.w("FacebookSync", response);
@@ -61,29 +43,50 @@ public class GetFriendsListener extends BaseRequestListener
                 JSONObject frnd = data.getJSONObject(i);
                 String fname = frnd.getString("name");
                 String id = frnd.getString("id");
+                fname = pruneName(fname);
 
+                Uri contacts = ContactsContract.Data.CONTENT_URI;
+                String[] projection = new String[] {
+                    ContactsContract.Data.RAW_CONTACT_ID,
+                    ContactsContract.Contacts.DISPLAY_NAME
+                };
+                String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP +
+                    " = '1' AND " + ContactsContract.Contacts.DISPLAY_NAME +
+                    " ='" + fname + "'";
+                String sortOrder = ContactsContract.Contacts.DISPLAY_NAME +
+                    " COLLATE LOCALIZED ASC";
+                Cursor cursor = activity.managedQuery(
+                    contacts,
+                    projection,
+                    selection,
+                    null,
+                    sortOrder
+                    );
+                
+                Log.w("FacebookSync", "getting: " + fname);
                 cursor.moveToFirst();
-                while(!cursor.isAfterLast())
+                if(cursor.getCount() == 0)
                 {
-                    String cname = cursor.getString(1);
-                    if(cname == null)
-                    {
-                        continue;
-                    }
-                    if(nameMatch(fname, cname))
-                    {
-                        Log.w("FacebookSync", "Setting: " + fname);
-                        byte[] photo = downloadPhoto(id);
-                        int cid = cursor.getInt(0);
-                        Uri per = ContentUris.withAppendedId(
-                                ContactsContract.Contacts.CONTENT_URI, cid);
-                        ContactManager.setPhoto(per, photo, activity);
-                        Friend f = new Friend(fname, photo);
-                        observable.notify(f);
-                        break;
-                    }
-                    cursor.moveToNext();
+                    continue;
                 }
+
+                String cname = cursor.getString(1);
+                Log.w("FacebookSync", "cname: " + cname);
+                if(cname == null)
+                {
+                    continue;
+                }
+                
+                Log.w("FacebookSync", "Setting: " + fname);
+                byte[] photo = downloadPhoto(id);
+                int cid = cursor.getInt(0);
+                Uri per = ContentUris.withAppendedId(
+                        ContactsContract.Contacts.CONTENT_URI, cid);
+                ContactManager.setPhoto(per, photo, activity);
+                Friend f = new Friend(fname, photo);
+                observable.notify(f);
+                
+                cursor.close();
             }
         }
         catch(JSONException ex)
@@ -94,7 +97,6 @@ public class GetFriendsListener extends BaseRequestListener
         {
             Log.w("FacebookSync", ex.getMessage());
         }
-        cursor.close();
     }
 
     private byte[] downloadPhoto(String id)
@@ -120,24 +122,13 @@ public class GetFriendsListener extends BaseRequestListener
         return out.toByteArray();
     }
 
-    private boolean nameMatch(String n1, String n2)
+    private String pruneName(String name)
     {
-        //Log.w("FacebookSync", n1 + " " + n2);
+        String ret = "";
+        String ar[] = name.split(" ");
+        ret = ar[0] + " " + ar[ar.length - 1];
 
-        String na1[] = n1.split(" ");
-        String na2[] = n2.split(" ");
-
-        String fname1 = na1[0];
-        String fname2 = na2[0];
-        String lname1 = na1[na1.length - 1];
-        String lname2 = na2[na2.length - 1];
-
-        if(fname1.equals(fname2) && lname1.equals(lname2))
-        {
-            return true;
-        }
-
-        return false;
+        return ret;
     }
 }
 
