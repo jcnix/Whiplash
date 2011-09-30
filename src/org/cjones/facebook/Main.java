@@ -78,11 +78,19 @@ public class Main extends Activity
 
     public void sync(View view)
     {
-        ProgressObservable po = ProgressObservable.getInstance();
-        GetFriendsListener gfl = new GetFriendsListener(this, po);
-        asyncRunner.request("me/friends", gfl);
-        Intent showProgress = new Intent(view.getContext(), Progress.class);
-        startActivity(showProgress);
+        if(!fb.isSessionValid())
+        {
+            mText.setText("You must connect to Facebook.");
+        }
+        else
+        {
+            mText.setText("");
+            ProgressObservable po = ProgressObservable.getInstance();
+            GetFriendsListener gfl = new GetFriendsListener(this, po);
+            asyncRunner.request("me/friends", gfl);
+            Intent showProgress = new Intent(view.getContext(), Progress.class);
+            startActivity(showProgress);
+        }
     }
 
 
