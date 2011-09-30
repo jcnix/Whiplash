@@ -1,0 +1,15 @@
+1.2
+***
+- Use Android 2.x Contacts API throughout
+- Properly match users who use their middle name on Facebook
+- Error message if not auth'd with Facebook
+- Better searching through contact list
+
+1.1
+***
+- Don't download pictures until we know they're in the address book
+- Show progress as friends are synced
+
+1.0
+***
+- Initial Release
