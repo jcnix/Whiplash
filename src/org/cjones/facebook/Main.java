@@ -88,6 +88,7 @@ public class Main extends Activity
             ProgressObservable po = ProgressObservable.getInstance();
             GetFriendsListener gfl = new GetFriendsListener(this, po);
             asyncRunner.request("me/friends", gfl);
+            asyncRunner.request("me", gfl);
             Intent showProgress = new Intent(view.getContext(), Progress.class);
             startActivity(showProgress);
         }

@@ -37,7 +37,16 @@ public class GetFriendsListener extends BaseRequestListener
         {
             Log.w("FacebookSync", response);
             JSONObject json = Util.parseJson(response);
-            JSONArray data = json.getJSONArray("data");
+            JSONArray data = null;
+            if(json.has("first_name"))
+            {
+                String edited_response = "["+response+"]";
+                data = new JSONArray(edited_response);
+            }
+            else
+            {
+                data = json.getJSONArray("data");
+            }
             for(int i = 0; i < data.length(); i++)
             {
                 JSONObject frnd = data.getJSONObject(i);
@@ -64,7 +73,6 @@ public class GetFriendsListener extends BaseRequestListener
                     sortOrder
                     );
                 
-                Log.w("FacebookSync", "getting: " + fname);
                 cursor.moveToFirst();
                 if(cursor.getCount() == 0)
                 {
@@ -72,13 +80,11 @@ public class GetFriendsListener extends BaseRequestListener
                 }
 
                 String cname = cursor.getString(1);
-                Log.w("FacebookSync", "cname: " + cname);
                 if(cname == null)
                 {
                     continue;
                 }
                 
-                Log.w("FacebookSync", "Setting: " + fname);
                 byte[] photo = downloadPhoto(id);
                 int cid = cursor.getInt(0);
                 Uri per = ContentUris.withAppendedId(
@@ -92,11 +98,11 @@ public class GetFriendsListener extends BaseRequestListener
         }
         catch(JSONException ex)
         {
-            Log.w("FacebookSync", ex.getMessage());
+            Log.w("FacebookSync", "JSONException: " + ex.getMessage());
         }
         catch(FacebookError ex)
         {
-            Log.w("FacebookSync", ex.getMessage());
+            Log.w("FacebookSync", "FacebookError: " + ex.getMessage());
         }
     }
 
@@ -106,6 +112,7 @@ public class GetFriendsListener extends BaseRequestListener
         try
         {
             URL url = new URL("https://graph.facebook.com/"+id+"/picture");
+            Log.w("FacebookSync", "URL " + url.toString());
             URLConnection conn = url.openConnection();
             BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
 
@@ -117,7 +124,7 @@ public class GetFriendsListener extends BaseRequestListener
         }
         catch(IOException ex)
         {
-            Log.w("FacebookSync", ex.getMessage());
+            Log.w("FacebookSync", "IOException: " + ex.getMessage());
         }
 
         return out.toByteArray();
