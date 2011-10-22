@@ -53,7 +53,7 @@ public class GetFriendsListener extends BaseRequestListener
                 String fname = frnd.getString("name");
                 String id = frnd.getString("id");
                 fname = pruneName(fname);
-                fname = fname.replace("'", "\'");
+                fname = fname.replace("'", "\\'");
 
                 Uri contacts = ContactsContract.Data.CONTENT_URI;
                 String[] projection = new String[] {
