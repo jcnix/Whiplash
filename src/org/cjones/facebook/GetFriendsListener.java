@@ -61,15 +61,15 @@ public class GetFriendsListener extends BaseRequestListener
                     ContactsContract.Contacts.DISPLAY_NAME
                 };
                 String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP +
-                    " = '1' AND " + ContactsContract.Contacts.DISPLAY_NAME +
-                    " ='" + fname + "'";
+                    " =? AND " + ContactsContract.Contacts.DISPLAY_NAME +
+                    " =?";
                 String sortOrder = ContactsContract.Contacts.DISPLAY_NAME +
                     " COLLATE LOCALIZED ASC";
                 Cursor cursor = activity.managedQuery(
                     contacts,
                     projection,
                     selection,
-                    null,
+                    new String[] {"1", fname},
                     sortOrder
                     );
                 
