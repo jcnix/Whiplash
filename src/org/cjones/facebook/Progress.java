@@ -26,7 +26,6 @@ public class Progress extends ListActivity implements Observer
 {
     private FriendsAdapter arr;
     private HashMap<Friend, Boolean> checked;
-    private int rows;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -46,7 +45,6 @@ public class Progress extends ListActivity implements Observer
     {
         if(arg instanceof Friend)
         {
-            rows++;
             final Friend f = (Friend) arg;
             runOnUiThread(new Runnable() {
                 public void run() {
