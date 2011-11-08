@@ -137,21 +137,12 @@ public class Progress extends ListActivity implements Observer
             holder.image.setImageBitmap(fri.getPhoto());
             holder.text.setText(fri.getName());
             
+            boolean isChecked = false;
             if(checked.containsKey(holder.fri))
-            { 
-                if(checked.get(holder.fri) == true)
-                {
-                    holder.cb.setChecked(true);
-                }
-                else
-                {
-                    holder.cb.setChecked(false);
-                }
-            }
-            else
             {
-                holder.cb.setChecked(false);
+                isChecked = checked.get(holder.fri);
             }
+            holder.cb.setChecked(isChecked);
 
             holder.cb.setOnCheckedChangeListener(new OnCheckChangeListener(holder, checked));
             return v;
@@ -175,14 +166,7 @@ class OnCheckChangeListener implements OnCheckedChangeListener
     {
         if(holder.cb.equals(buttonView))
         {       
-            if(!isChecked)
-            {
-                checked.put(holder.fri, false);
-            }
-            else
-            {
-                checked.put(holder.fri, true);
-            }
+            checked.put(holder.fri, isChecked);
         }
     }
 }
