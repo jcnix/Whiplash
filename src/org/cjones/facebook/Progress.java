@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -24,13 +25,16 @@ import java.util.Observer;
 public class Progress extends ListActivity implements Observer
 {
     private FriendsAdapter arr;
+    private HashMap<Friend, Boolean> checked;
+    private int rows;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        arr = new FriendsAdapter(this);
+        
+        checked = new HashMap<Friend, Boolean>();
+        arr = new FriendsAdapter(this, checked);
         setListAdapter(arr);
         setContentView(R.layout.progress);
 
@@ -42,6 +46,7 @@ public class Progress extends ListActivity implements Observer
     {
         if(arg instanceof Friend)
         {
+            rows++;
             final Friend f = (Friend) arg;
             runOnUiThread(new Runnable() {
                 public void run() {
@@ -51,19 +56,32 @@ public class Progress extends ListActivity implements Observer
         }
     }
 
+    /* Activated by Apply Button */
+    public void apply_changes(View v)
+    {
+        Set<Friend> keys = checked.keySet();
+        for(Friend f : keys)
+        {
+            if(checked.get(f))
+            {
+                f.updateContact(this);
+            }
+        }
+    }
+
     private class FriendsAdapter extends BaseAdapter 
     {
         private Activity activity;
         private ArrayList<Friend> friends;
         private LayoutInflater vi;
-        private HashMap<int, boolean> checked;
+        private HashMap<Friend, Boolean> checked;
 
-        public FriendsAdapter(Activity a)
+        public FriendsAdapter(Activity a, HashMap<Friend, Boolean> checked)
         {
             activity = a;
+            this.checked = checked;
             friends = new ArrayList<Friend>();
             vi = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            checked = new HashMap<int, bool>();
         }
 
         public int getCount() {
@@ -71,7 +89,7 @@ public class Progress extends ListActivity implements Observer
         }
 
         public Object getItem(int position) {
-            return position;
+            return friends.get(position);
         }
 
         public long getItemId(int position) {
@@ -115,34 +133,38 @@ public class Progress extends ListActivity implements Observer
             }
 
             Friend fri = friends.get(position);
-            holder.ref = position;
+            holder.fri = fri;
             holder.image.setImageBitmap(fri.getPhoto());
             holder.text.setText(fri.getName());
             
-            if(checked.containsKey(""+holder.ref))
+            if(checked.containsKey(holder.fri))
             { 
-                if(checked.get(""+holder.ref).equals("true"))
+                if(checked.get(holder.fri) == true)
                 {
                     holder.cb.setChecked(true);
                 }
                 else
+                {
                     holder.cb.setChecked(false);
+                }
             }
             else
+            {
                 holder.cb.setChecked(false);
+            }
 
-            holder.cb.setOnCheckedChangeListener(new OncheckchangeListner(holder, checked));
+            holder.cb.setOnCheckedChangeListener(new OnCheckChangeListener(holder, checked));
             return v;
         }
     }
 }
 
-class OncheckchangeListner implements OnCheckedChangeListener
+class OnCheckChangeListener implements OnCheckedChangeListener
 {
     private ViewHolder holder = null;
-    private HashMap<String, String> checked;
+    private HashMap<Friend, Boolean> checked;
 
-    public OncheckchangeListner(ViewHolder viHolder, HashMap<String, String> checked)
+    public OnCheckChangeListener(ViewHolder viHolder, HashMap<Friend, Boolean> checked)
     {
         holder =  viHolder;
         this.checked = checked;
@@ -155,10 +177,12 @@ class OncheckchangeListner implements OnCheckedChangeListener
         {       
             if(!isChecked)
             {
-                checked.put(""+holder.ref,"false");
+                checked.put(holder.fri, false);
             }
             else
-                checked.put(""+holder.ref,"true");
+            {
+                checked.put(holder.fri, true);
+            }
         }
     }
 }
@@ -168,6 +192,6 @@ class ViewHolder
     public ImageView image;
     public CheckBox cb;
     public TextView text;
-    public int ref;
+    public Friend fri;
 }
 

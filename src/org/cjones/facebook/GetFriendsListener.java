@@ -89,8 +89,8 @@ public class GetFriendsListener extends BaseRequestListener
                 int cid = cursor.getInt(0);
                 Uri per = ContentUris.withAppendedId(
                         ContactsContract.Contacts.CONTENT_URI, cid);
-                ContactManager.setPhoto(per, photo, activity);
-                Friend f = new Friend(fname, photo);
+                Friend f = new Friend(fname, photo, per);
+                //ContactManager.setPhoto(per, photo, activity);
                 observable.notify(f);
             }
         }

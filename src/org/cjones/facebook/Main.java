@@ -41,6 +41,7 @@ public class Main extends Activity
         fb.authorizeCallback(requestCode, resultCode, data);
     }
 
+    /* Activated by "Connect to Facebook" Button */
     public void fb_auth(View view)
     {
         SessionStore.restore(fb, this);
@@ -76,6 +77,7 @@ public class Main extends Activity
         });
     }
 
+    /* Activated by Sync Button */
     public void sync(View view)
     {
         if(!fb.isSessionValid())
