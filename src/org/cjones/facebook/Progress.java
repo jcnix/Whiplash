@@ -26,6 +26,7 @@ public class Progress extends ListActivity implements Observer
 {
     private FriendsAdapter arr;
     private HashMap<Friend, Boolean> checked;
+    private TextView statusText;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -39,6 +40,8 @@ public class Progress extends ListActivity implements Observer
 
         ProgressObservable observable = ProgressObservable.getInstance();
         observable.addObserver(this);
+
+        statusText = (TextView) findViewById(R.id.sync_status);
     }
 
     public void update(Observable obj, Object arg)
@@ -57,6 +60,7 @@ public class Progress extends ListActivity implements Observer
     /* Activated by Apply Button */
     public void apply_changes(View v)
     {
+        statusText.setText("");
         Set<Friend> keys = checked.keySet();
         for(Friend f : keys)
         {
@@ -65,6 +69,7 @@ public class Progress extends ListActivity implements Observer
                 f.updateContact(this);
             }
         }
+        statusText.setText("Update complete");
     }
 
     private class FriendsAdapter extends BaseAdapter 
