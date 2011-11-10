@@ -1,3 +1,11 @@
+1.3.2
+*****
+- 's in Facebook names shouldn't crash the app anymore
+
+1.3.1
+*****
+- Update to new Android SDK tools.
+
 1.3
 ***
 - Get user's own photo
