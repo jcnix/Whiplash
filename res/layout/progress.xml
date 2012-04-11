@@ -24,7 +24,7 @@
     </LinearLayout>
     <ListView
         android:id="@android:id/list"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
         />
