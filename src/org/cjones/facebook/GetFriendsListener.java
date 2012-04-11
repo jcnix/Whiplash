@@ -51,7 +51,7 @@ public class GetFriendsListener extends BaseRequestListener
             {
                 JSONObject frnd = data.getJSONObject(i);
                 String fname = frnd.getString("name");
-                String id = frnd.getString("id");
+                int id = frnd.getInt("id");
                 fname = pruneName(fname);
                 fname = fname.replace("'", "\\'");
 
@@ -89,10 +89,10 @@ public class GetFriendsListener extends BaseRequestListener
                 int cid = cursor.getInt(0);
                 Uri per = ContentUris.withAppendedId(
                         ContactsContract.Contacts.CONTENT_URI, cid);
-                Friend f = new Friend(fname, photo, per);
-                //ContactManager.setPhoto(per, photo, activity);
+                Friend f = new Friend(id, fname, photo, per);
                 observable.notify(f);
             }
+            //observable.clear();
         }
         catch(JSONException ex)
         {
@@ -104,7 +104,7 @@ public class GetFriendsListener extends BaseRequestListener
         }
     }
 
-    private byte[] downloadPhoto(String id)
+    private byte[] downloadPhoto(int id)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try

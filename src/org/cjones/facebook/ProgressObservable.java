@@ -19,7 +19,18 @@ public class ProgressObservable extends Observable
         return po;
     }
 
+    public void clear()
+    {
+        deleteObservers();
+    }
+
     public void notify(Friend response)
+    {
+        setChanged();
+        notifyObservers(response);
+    }
+
+    public void notify(Album response)
     {
         setChanged();
         notifyObservers(response);

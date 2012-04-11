@@ -3,6 +3,7 @@ package org.cjones.facebook;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context; 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,15 +120,6 @@ public class Progress extends ListActivity implements Observer
                 holder.cb = (CheckBox) v.findViewById(R.id.check);
                 holder.text = (TextView) v.findViewById(R.id.name);
                 
-                holder.text.setOnClickListener(new OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        holder.cb.setChecked(true);
-                    }
-                });
-
                 v.setTag(holder);
             }
             else
@@ -140,6 +132,17 @@ public class Progress extends ListActivity implements Observer
             holder.image.setImageBitmap(fri.getPhoto());
             holder.text.setText(fri.getName());
             
+            holder.text.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Intent showAlbums = new Intent(v.getContext(), Albums.class);
+                    showAlbums.putExtra("friend_id", holder.fri.getID());
+                    startActivity(showAlbums);
+                }
+            });
+
             boolean isChecked = false;
             if(checked.containsKey(holder.fri))
             {

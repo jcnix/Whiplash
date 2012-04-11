@@ -18,8 +18,7 @@ import org.cjones.facebook.SessionEvents.LogoutListener;
 
 public class Main extends Activity
 {
-    public static final String APP_ID = "159488880804695";
-    private Facebook fb = new Facebook(APP_ID);
+    private Facebook fb;
     private AsyncFacebookRunner asyncRunner;
     private TextView mText;
 
@@ -29,8 +28,8 @@ public class Main extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        fb = FacebookFactory.getInstance();
         asyncRunner = new AsyncFacebookRunner(fb);
-        final Button sync = (Button) findViewById(R.id.sync_button);
         mText = (TextView) findViewById(R.id.mText);
     }
 
@@ -48,12 +47,8 @@ public class Main extends Activity
         SessionEvents.addAuthListener(new SampleAuthListener());
         SessionEvents.addLogoutListener(new SampleLogoutListener());
         
-        // Use this if we want to let users choose a photo instead
-        // of the Profile Picture in the future
-        //fb.authorize(this, new String[] {"friends_photos" },
-        //        new DialogListener()
-        
-        fb.authorize(this, new DialogListener()
+        fb.authorize(this, new String[] {"friends_photos"},
+                new DialogListener()
         {
             @Override
             public void onComplete(Bundle values)

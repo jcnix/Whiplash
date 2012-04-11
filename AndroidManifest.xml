@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.cjones.facebook"
-      android:versionCode="9"
-      android:versionName="1.4.1">
+      android:versionCode="10"
+      android:versionName="1.5">
     <uses-sdk android:minSdkVersion="8"
             android:targetSdkVersion="10"
-            android:maxSdkVersion="10"
             />
     <application android:label="Whiplash" android:icon="@drawable/icon">
         <activity android:name="Main"
@@ -16,6 +15,9 @@
             </intent-filter>
         </activity>
         <activity android:name="Progress"
+            android:configChanges="orientation">
+        </activity>
+        <activity android:name="Albums"
             android:configChanges="orientation">
         </activity>
     </application>
