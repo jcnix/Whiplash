@@ -7,13 +7,13 @@ import android.net.Uri;
 
 public class Friend
 {
-    private int id;
+    private long id;
     private String name;
     private byte[] photo_bytes;
     private Bitmap photo;
     private Uri uri;
 
-    public Friend(int id, String name, byte[] photo, Uri uri)
+    public Friend(long id, String name, byte[] photo, Uri uri)
     {
         this.id = id;
         this.name = name;
@@ -27,7 +27,7 @@ public class Friend
         ContactManager.setPhoto(uri, photo_bytes, activity);
     }
 
-    public int getID()
+    public long getID()
     {
         return id;
     }

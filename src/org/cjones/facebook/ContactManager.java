@@ -7,6 +7,18 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
 import android.net.Uri;
+import android.util.Log;
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
+import com.facebook.android.Util;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import org.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class ContactManager
 {
@@ -39,6 +51,30 @@ public class ContactManager
         } else { 
             context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values); 
         } 
+    }
+    
+    public static byte[] downloadPhoto(long id)
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try
+        {
+            URL url = new URL("https://graph.facebook.com/"+id+"/picture?type=large");
+            Log.w("FacebookSync", url.toString());
+            URLConnection conn = url.openConnection();
+            BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+
+            int c;
+            while((c = in.read()) != -1)
+            {
+                out.write(c);
+            }
+        }
+        catch(IOException ex)
+        {
+            Log.w("FacebookSync", "IOException: " + ex.getMessage());
+        }
+
+        return out.toByteArray();
     }
 }
 

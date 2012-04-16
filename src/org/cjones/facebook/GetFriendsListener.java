@@ -9,12 +9,6 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,9 +29,11 @@ public class GetFriendsListener extends BaseRequestListener
         Log.w("FacebookSync", "START SYNC");
         try
         {
-            Log.w("FacebookSync", response);
             JSONObject json = Util.parseJson(response);
             JSONArray data = null;
+            
+            /* If request is /me turn response into an
+             * "array */
             if(json.has("first_name"))
             {
                 String edited_response = "["+response+"]";
@@ -51,7 +47,7 @@ public class GetFriendsListener extends BaseRequestListener
             {
                 JSONObject frnd = data.getJSONObject(i);
                 String fname = frnd.getString("name");
-                int id = frnd.getInt("id");
+                long id = frnd.getLong("id");
                 fname = pruneName(fname);
                 fname = fname.replace("'", "\\'");
 
@@ -85,7 +81,8 @@ public class GetFriendsListener extends BaseRequestListener
                     continue;
                 }
                 
-                byte[] photo = downloadPhoto(id);
+                byte[] photo = ContactManager.downloadPhoto(id);
+
                 int cid = cursor.getInt(0);
                 Uri per = ContentUris.withAppendedId(
                         ContactsContract.Contacts.CONTENT_URI, cid);
@@ -104,30 +101,12 @@ public class GetFriendsListener extends BaseRequestListener
         }
     }
 
-    private byte[] downloadPhoto(int id)
-    {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try
-        {
-            URL url = new URL("https://graph.facebook.com/"+id+"/picture");
-            Log.w("FacebookSync", "URL " + url.toString());
-            URLConnection conn = url.openConnection();
-            BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-
-            int c;
-            while((c = in.read()) != -1)
-            {
-                out.write(c);
-            }
-        }
-        catch(IOException ex)
-        {
-            Log.w("FacebookSync", "IOException: " + ex.getMessage());
-        }
-
-        return out.toByteArray();
-    }
-
+    /**
+     * Cuts out middle names
+     * The Android phonebook doesn't have a middle name field
+     * So this function splits on spaces, and attaches the first
+     * and last elements of the split up array.
+     */
     private String pruneName(String name)
     {
         String ret = "";
